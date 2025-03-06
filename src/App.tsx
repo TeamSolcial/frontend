@@ -1,11 +1,15 @@
-import React from 'react';
+import { WalletContextProvider } from './components/WalletContextProvider';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 function App() {
   return (
-    <div className="App" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <h1>Hello World!</h1>
-    </div>
-  );
+    <WalletContextProvider>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
+        <h1>Welcome to Solcial</h1>
+        <WalletMultiButton />
+      </div>
+    </WalletContextProvider>
+  )
 }
 
-export default App;
+export default App
