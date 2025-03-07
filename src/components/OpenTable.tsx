@@ -1,9 +1,9 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useNavigate } from 'react-router-dom';
 
 export const OpenTable: FC = () => {
-  const { publicKey } = useWallet();
+  const { connected } = useWallet();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
@@ -47,10 +47,6 @@ export const OpenTable: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!publicKey) {
-      alert('Please connect your wallet first!');
-      return;
-    }
     // TODO: Implement the actual event creation using Solana program
     console.log('Creating event with data:', formData);
     navigate('/open-table/success');
@@ -220,7 +216,8 @@ export const OpenTable: FC = () => {
           <div className="flex justify-end mt-8">
             <button
               type="submit"
-              className="w-full px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"
+              className={`w-full px-6 py-3 ${connected ? 'bg-black hover:bg-gray-800' : 'bg-gray-400 cursor-not-allowed'} text-white rounded-md`}
+              disabled={!connected}
             >
               Open a Table
             </button>

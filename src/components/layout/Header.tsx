@@ -1,5 +1,4 @@
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { WalletContextProvider } from '../WalletContextProvider';
 import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
@@ -15,12 +14,10 @@ export const Header = () => {
           onClick={() => navigate('/')}
         />
       </div>
-      <WalletContextProvider>
         <nav className="flex items-center gap-4">
           <button className="text-gray-600 hover:text-gray-900 text-base sm:text-lg">Discover</button>
           <WalletMultiButton />
         </nav>
-      </WalletContextProvider>
     </header>
   );
 };
