@@ -10,7 +10,7 @@ export const OpenTableSuccess: FC = () => {
         <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto mb-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h1 className="text-2xl font-bold mb-4">Table Opened!</h1>
+        <h1 className="text-2xl font-bold mb-4">Table Created!</h1>
         <button
           onClick={() => navigate('/my-page')}
           className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"

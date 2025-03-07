@@ -90,7 +90,7 @@ export const OpenTable: FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-8">
-      <h1 className="text-2xl font-bold mb-8">Open a Table</h1>
+      <h1 className="text-2xl font-bold mb-8">Create a Table</h1>
       <form onSubmit={handleSubmit} className="max-w-5xl mx-auto grid grid-cols-12 gap-8">
         <div className="col-span-4">
           <div className="aspect-square w-full bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-4 relative">
@@ -140,10 +140,12 @@ export const OpenTable: FC = () => {
               required
             >
               <option value="">Category</option>
-              <option value="Technology">Technology</option>
-              <option value="Business">Business</option>
-              <option value="Social">Social</option>
-              <option value="Education">Education</option>
+              <option value="Food">Food</option>
+              <option value="Study">Study</option>
+              <option value="Arts">Arts</option>
+              <option value="Sports">Sports</option>
+              <option value="Games">Games</option>
+              <option value="Community">Community</option>
               <option value="Other">Other</option>
             </select>
           </div>
@@ -213,7 +215,7 @@ export const OpenTable: FC = () => {
             <h3 className="font-medium">Event Options</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
-                <span>Price</span>
+                <span>Ticket Price</span>
                 <input
                   type="number"
                   name="price"
@@ -226,7 +228,14 @@ export const OpenTable: FC = () => {
                 />
               </div>
               <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
-                <span>Total Seats</span>
+                <span>Require Approval</span>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" className="sr-only peer" />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+              <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
+              <span>Total Seats</span>
                 <input
                   type="number"
                   name="seats"
@@ -239,13 +248,6 @@ export const OpenTable: FC = () => {
                   required
                 />
               </div>
-              <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
-                <span>Require Approval</span>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" className="sr-only peer" />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                </label>
-              </div>
             </div>
           </div>
 
@@ -255,7 +257,7 @@ export const OpenTable: FC = () => {
               className={`w-full px-6 py-3 ${connected ? 'bg-black hover:bg-gray-800' : 'bg-gray-400 cursor-not-allowed'} text-white rounded-md`}
               disabled={!connected}
             >
-              Open a Table
+              Create a Table
             </button>
           </div>
         </div>

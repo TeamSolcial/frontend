@@ -22,7 +22,7 @@ export const Hero = () => {
           }}
           className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors text-lg"
         >
-          Open a Table
+          Open a new table
         </button>
       </div>
       <Alert
