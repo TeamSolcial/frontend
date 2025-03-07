@@ -5,6 +5,7 @@ import { OpenTable } from './components/OpenTable';
 import { Routes, Route } from 'react-router-dom';
 import { WalletContextProvider } from './components/WalletContextProvider';
 import { OpenTableSuccess } from './components/OpenTableSuccess';
+import { MyPage } from './components/MyPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Hero />} />
             <Route path="/open-table" element={<OpenTable />} />
             <Route path="/open-table/success" element={<OpenTableSuccess />} />
+            <Route path="/my-page" element={<MyPage />} />
           </Routes>
         </main>
         <Footer />

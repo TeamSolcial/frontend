@@ -12,10 +12,10 @@ export const OpenTableSuccess: FC = () => {
         </svg>
         <h1 className="text-2xl font-bold mb-4">Table Opened!</h1>
         <button
-          onClick={() => navigate('/event-detail')} // TODO: Update with actual event detail route
+          onClick={() => navigate('/my-page')}
           className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800"
         >
-          Check the event
+          Check the table
         </button>
       </div>
     </div>
