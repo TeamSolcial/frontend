@@ -1,14 +1,16 @@
-import { WalletContextProvider } from './components/WalletContextProvider';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { Header } from './components/layout/Header';
+import { Hero } from './components/layout/Hero';
+import { Footer } from './components/layout/Footer';
 
 function App() {
   return (
-    <WalletContextProvider>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
-        <h1>Welcome to Solcial</h1>
-        <WalletMultiButton />
-      </div>
-    </WalletContextProvider>
+    <div className="flex flex-col min-h-screen bg-white">
+      <Header />
+      <main className="flex-grow">
+        <Hero />
+      </main>
+      <Footer />
+    </div>
   )
 }
 
