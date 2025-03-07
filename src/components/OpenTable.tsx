@@ -30,6 +30,7 @@ export const OpenTable: FC = () => {
     }
     // TODO: Implement the actual event creation using Solana program
     console.log('Creating event with data:', formData);
+    navigate('/open-table/success');
   };
 
   return (
