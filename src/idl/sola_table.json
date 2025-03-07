@@ -1,0 +1,155 @@
+{
+  "address": "71WNuqD9qFJbo8ZyjkSg7GHL866PAfxFZNAEW3uisZEX",
+  "metadata": {
+    "name": "sola_table",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "create_meetup",
+      "discriminator": [
+        68,
+        21,
+        121,
+        155,
+        244,
+        190,
+        141,
+        132
+      ],
+      "accounts": [
+        {
+          "name": "meetup",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "organizer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "max_participants",
+          "type": "u8"
+        },
+        {
+          "name": "country",
+          "type": "string"
+        },
+        {
+          "name": "city",
+          "type": "string"
+        },
+        {
+          "name": "location",
+          "type": "string"
+        },
+        {
+          "name": "price",
+          "type": "u64"
+        },
+        {
+          "name": "date",
+          "type": "i64"
+        },
+        {
+          "name": "category",
+          "type": "string"
+        },
+        {
+          "name": "image_url",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Meetup",
+      "discriminator": [
+        201,
+        72,
+        148,
+        178,
+        188,
+        166,
+        181,
+        174
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Meetup",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "organizer",
+            "type": "pubkey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "max_participants",
+            "type": "u8"
+          },
+          {
+            "name": "current_participants",
+            "type": "u8"
+          },
+          {
+            "name": "country",
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "type": "string"
+          },
+          {
+            "name": "location",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "date",
+            "type": "i64"
+          },
+          {
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "name": "image_url",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

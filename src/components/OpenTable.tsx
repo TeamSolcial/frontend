@@ -1,9 +1,13 @@
 import { FC, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useNavigate } from 'react-router-dom';
+import { web3 } from '@project-serum/anchor';
+import { getProgram } from '../utils/anchor';
 
 export const OpenTable: FC = () => {
-  const { connected } = useWallet();
+  const { connection } = useConnection();
+  const wallet = useWallet();
+  const { connected } = wallet;
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
@@ -47,9 +51,41 @@ export const OpenTable: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement the actual event creation using Solana program
-    console.log('Creating event with data:', formData);
-    navigate('/open-table/success');
+    if (!wallet.publicKey) return;
+
+    try {
+      const program = getProgram(connection, wallet);
+      
+      // Generate a new account for the meetup
+      const meetupKeypair = web3.Keypair.generate();
+      
+      const tx = await program.methods
+        .createMeetup(
+          formData.title,
+          formData.description,
+          Number(formData.seats),
+          "Korea", // country
+          "Seoul", // city
+          formData.location,
+          Number(formData.price),
+          new Date(formData.startDate).getTime(), // convert to timestamp
+          formData.category,
+          formData.imageUrl
+        )
+        .accounts({
+          meetup: meetupKeypair.publicKey,
+          organizer: wallet.publicKey,
+          systemProgram: web3.SystemProgram.programId,
+        })
+        .signers([meetupKeypair])
+        .rpc();
+
+      console.log("Transaction signature", tx);
+      navigate('/open-table/success');
+    } catch (error) {
+      console.error("Error creating meetup:", error);
+      navigate('/open-table/failure');
+    }
   };
 
   return (
