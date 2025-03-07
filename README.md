@@ -1,6 +1,6 @@
-# Solcial Frontend
+# SolaTable App
 
-A React-based frontend application for the Solcial platform.
+A React-based application for SolaTable.
 
 ## Tech Stack
 
