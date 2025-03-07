@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useNavigate } from 'react-router-dom';
 import { web3 } from '@project-serum/anchor';
-import { getProgram } from '../utils/anchor';
+import { getProgram } from '../../utils/anchor';
 
 export const OpenTable: FC = () => {
   const { connection } = useConnection();
