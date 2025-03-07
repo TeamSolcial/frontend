@@ -1,13 +1,23 @@
 import { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export const MyPage: FC = () => {
+  const { publicKey } = useWallet();
+  
+  // Utility function to format wallet address
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 4)}...${address.slice(-4)}`;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-8">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center mb-8">
           <div className="w-20 h-20 bg-gray-200 rounded-full mr-4"></div>
           <div>
-            <h1 className="text-2xl font-bold">My Name</h1>
+            <h1 className="text-2xl font-bold">
+              {publicKey ? formatAddress(publicKey.toString()) : 'Not Connected'}
+            </h1>
             <p className="text-gray-600">0 hosted · 1 participated</p>
           </div>
         </div>
