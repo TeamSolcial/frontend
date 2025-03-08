@@ -22,7 +22,7 @@ export const Discover: FC = () => {
           .map(table => ({
             id: table.publicKey.toString(),
             title: table.account.title,
-            capacity: `${table.account.participants.length}/${table.account.maxParticipants}`,
+            capacity: `${table.account.participants.length + 1}/${table.account.maxParticipants + 1}`,
             date: new Date(table.account.date.toNumber() * 1000).toLocaleDateString('en-US', {
               month: 'numeric',
               day: 'numeric',

@@ -14,7 +14,7 @@ export const OpenTable: FC = () => {
     title: '',
     description: '',
     location: '',
-    seats: '1',
+    seats: '2',
     price: '',
     startDate: '',
     category: '',
@@ -48,7 +48,7 @@ export const OpenTable: FC = () => {
         .createTable(
           formData.title,
           formData.description,
-          Number(formData.seats),
+          Number(formData.seats) - 1,
           "Korea", // country
           "Seoul", // city
           formData.location,

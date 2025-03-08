@@ -2,24 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { getAvatarUrl, formatAddress } from '../../utils/profile';
 import { getProgram } from '../../utils/anchor';
-
-interface Table {
-  publicKey: string;
-  account: {
-    organizer: string;
-    title: string;
-    description: string;
-    maxParticipants: number;
-    currentParticipants: number;
-    country: string;
-    city: string;
-    location: string;
-    price: number;
-    date: number;
-    category: string;
-    imageUrl: string;
-  };
-}
+import { Table } from '../common/Table';
 
 export const MyPage: FC = () => {
   const { publicKey } = useWallet();
@@ -44,15 +27,19 @@ export const MyPage: FC = () => {
         let hosted = 0;
         let participated = 0;
 
-        tables.forEach((table: any) => {
+        tables
+        .filter((table: any) => table.account.organizer.toString() === publicKey.toString()
+          || table.account.participants.includes(publicKey.toString()))
+        .forEach((table: any) => {
           const tableData = {
             publicKey: table.publicKey.toString(),
             account: {
               organizer: table.account.organizer.toString(),
               title: table.account.title,
               description: table.account.description,
-              maxParticipants: table.account.maxParticipants,
-              currentParticipants: table.account.currentParticipants,
+              maxSeats: (table.account.maxParticipants ?? 0) + 1,
+              currentSeats: (table.account.participants.length ?? 0) + 1,
+              participants: table.account.participants,
               country: table.account.country,
               city: table.account.city,
               location: table.account.location,
@@ -129,7 +116,7 @@ export const MyPage: FC = () => {
                     <div className="flex-grow">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium">{table.account.title}</h3>
-                        <span className="text-sm text-gray-500">{table.account.currentParticipants}/{table.account.maxParticipants}</span>
+                        <span className="text-sm text-gray-500">{table.account.currentSeats}/{table.account.maxSeats}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                         <span>{new Date(table.account.date).toLocaleString()}</span>
@@ -166,7 +153,7 @@ export const MyPage: FC = () => {
                     <div className="flex-grow">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium">{table.account.title}</h3>
-                        <span className="text-sm text-gray-500">{table.account.currentParticipants}/{table.account.maxParticipants}</span>
+                        <span className="text-sm text-gray-500">{table.account.currentSeats}/{table.account.maxSeats}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                         <span>{new Date(table.account.date * 1000).toLocaleString()}</span>
