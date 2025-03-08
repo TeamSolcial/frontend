@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export interface Event {
   id: string;
@@ -18,9 +19,13 @@ interface EventCardProps {
 
 export const EventCard: FC<EventCardProps> = ({ event, variant = 'default' }) => {
   const isFeatured = variant === 'featured';
+  const navigate = useNavigate();
 
   return (
-    <div className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow">      <div className="relative">
+    <div 
+      className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer" 
+      onClick={() => navigate(`/table/${event.id}`)}
+    >      <div className="relative">
         <div className={`${isFeatured ? 'aspect-video' : 'w-full h-48'} bg-gray-100 flex items-center justify-center`}>
           <div className="w-12 h-12 border-2 border-gray-300 transform rotate-45"></div>
         </div>

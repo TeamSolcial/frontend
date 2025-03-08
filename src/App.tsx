@@ -8,6 +8,7 @@ import { OpenTableSuccess } from './components/route/OpenTableSuccess';
 import { OpenTableFailure } from './components/route/OpenTableFailure';
 import { MyPage } from './components/route/MyPage';
 import { Discover } from './components/route/Discover';
+import { TableDetail } from './components/route/TableDetail';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
@@ -33,6 +34,7 @@ function App() {
                   <Route path="/open-table/failure" element={<OpenTableFailure />} />
                   <Route path="/my-page" element={<MyPage />} />
                   <Route path="/discover" element={<Discover />} />
+                  <Route path="/table/:id" element={<TableDetail />} />
                 </Routes>
               </main>
               <Footer />
