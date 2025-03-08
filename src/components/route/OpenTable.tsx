@@ -121,7 +121,7 @@ export const OpenTable: FC = () => {
             >
               <option value="">Category</option>
               {categories.map(category => (
-                <option value={category}>{category}</option>
+                <option key={category} value={category}>{category}</option>
               ))}
             </select>
           </div>
