@@ -27,7 +27,7 @@ export const Header = () => {
               onClick={() => navigate('/my-page')}
               className="text-gray-600 hover:text-gray-900 text-base sm:text-lg"
             >
-              My Page
+              My Table
             </button>
           )}
         </nav>
