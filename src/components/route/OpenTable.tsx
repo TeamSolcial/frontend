@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useNavigate } from 'react-router-dom';
-import { web3 } from '@project-serum/anchor';
+import { BN, web3 } from '@project-serum/anchor';
 import { getProgram } from '../../utils/anchor';
 
 export const OpenTable: FC = () => {
@@ -67,15 +67,14 @@ export const OpenTable: FC = () => {
           "Korea", // country
           "Seoul", // city
           formData.location,
-          Number(formData.price),
-          new Date(formData.startDate).getTime(), // convert to timestamp
+          new BN(Number(formData.price)),
+          new BN(new Date(formData.startDate).getTime()),
           formData.category,
           formData.imageUrl
         )
         .accounts({
           meetup: meetupKeypair.publicKey,
-          organizer: wallet.publicKey,
-          systemProgram: web3.SystemProgram.programId,
+          organizer: wallet.publicKey
         })
         .signers([meetupKeypair])
         .rpc();

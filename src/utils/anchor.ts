@@ -1,8 +1,7 @@
-import { Program, AnchorProvider, Idl } from '@project-serum/anchor';
-import { Connection, PublicKey } from '@solana/web3.js';
-import idl from '../idl/sola_table.json';
-
-const programId = new PublicKey('GdFRCmL2NYrB42712pU45t8C9Uj1nKLYKzg8NjkrsPoK');
+import { Program, AnchorProvider, setProvider } from "@coral-xyz/anchor";
+import { Connection } from '@solana/web3.js';
+import type { SolaTable } from "../types/sola_table";
+import idl from "../idl/sola_table.json";
 
 export const getProgram = (connection: Connection, wallet: any) => {
   const provider = new AnchorProvider(
@@ -10,6 +9,7 @@ export const getProgram = (connection: Connection, wallet: any) => {
     wallet,
     AnchorProvider.defaultOptions()
   );
+  setProvider(provider);
 
-  return new Program(idl as unknown as Idl, programId, provider);
+  return new Program(idl as unknown as SolaTable, provider);
 };
