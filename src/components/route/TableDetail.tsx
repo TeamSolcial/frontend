@@ -9,6 +9,8 @@ interface TableData {
   description: string;
   maxParticipants: number;
   currentParticipants: number;
+  participants: string[];
+  organizer: string;
   location: string;
   price: number;
   date: number;
@@ -40,7 +42,9 @@ export const TableDetail: FC = () => {
           description: table.description,
           maxParticipants: table.maxParticipants,
           currentParticipants: table.participants.length,
-          location: `${table.city}, ${table.country}`,
+          participants: table.participants.map(p => p.toString()),
+          organizer: table.organizer.toString(),
+          location: `${table.location}`,
           price: table.price.toNumber(),
           date: table.date.toNumber(),
           category: table.category,
@@ -89,74 +93,133 @@ export const TableDetail: FC = () => {
           )}
         </div>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">{table.title}</h1>
-          <div className="flex items-center gap-4 text-gray-600 mb-6">
-            <span>{new Date(table.date * 1000).toLocaleString()}</span>
-            <span>·</span>
-            <span>{table.location}</span>
-          </div>
-          <div className="flex items-center gap-3 mb-6">
-            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              {table.currentParticipants + 1}/{table.maxParticipants + 1}
-            </span>
-            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">{table.category}</span>
-          </div>
-          <p className="text-gray-600 whitespace-pre-wrap">{table.description}</p>
+        <div className="flex flex-col items-start gap-3 mb-6">
+          <h1 className="text-3xl font-bold">{table.title}</h1>
+          <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">{table.category}</span>
         </div>
 
-        <div className="border-t pt-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-2xl font-bold">{table.price.toLocaleString()} STT</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {table.organizer == wallet.publicKey?.toString()? (
+            <div className="md:col-span-2 space-y-8">
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-lg font-semibold mb-6">Host Information</h2>
+                <p className="text-base text-gray-600 mb-6">You are the host of this table.</p>
+              </div>
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-lg font-semibold mb-6">About This Table</h2>
+                <p className="text-base text-gray-600">{table.description}</p>
+              </div>
             </div>
-            <button 
-              className={`px-6 py-3 rounded-lg transition-colors ${wallet.connected ? 'bg-black hover:bg-gray-800 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
-              onClick={async () => {
-                if (!wallet.connected || !id || !table || joining || !wallet.publicKey) return;
-                
-                try {
-                  setJoining(true);
-                  const program = getProgram(connection, wallet);
-                  const tablePubkey = new PublicKey(id);
+          ) : (
+            <div className="md:col-span-2 space-y-8">
+            {table.participants.includes(wallet.publicKey?.toString() || '') ? (
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-lg font-semibold mb-6">You're In</h2>
+                <p className="text-base text-gray-600 mb-6">No longer able to attend? Notify the host by cancelling your registration.</p>
+              </div>
+            ) : (
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-lg font-semibold mb-6">Registration</h2>
+                <p className="text-base text-gray-600 mb-6">Welcome! Sign up below to join this table.</p>
+                <button 
+                  className={`w-full flex items-center justify-between px-4 py-4 rounded-lg transition-colors text-lg ${wallet.connected ? 'bg-black hover:bg-gray-800 text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                  onClick={async () => {
+                    if (!wallet.connected || !id || !table || joining || !wallet.publicKey) return;
+                    
+                    try {
+                      setJoining(true);
+                      const program = getProgram(connection, wallet);
+                      const tablePubkey = new PublicKey(id);
+                  
+                      await program.methods
+                        .joinTable()
+                        .accounts({
+                          table: tablePubkey,
+                          participant: wallet.publicKey
+                        })
+                        .rpc();
+                  
+                      const updatedTable = await program.account.table.fetch(tablePubkey);
+                      setTable(prev => prev ? {
+                        ...prev,
+                        currentParticipants: updatedTable.participants.length,
+                        participants: updatedTable.participants.map(p => p.toString())
+                      } : null);
+                      setShowSuccess(true);
+                      setTimeout(() => setShowSuccess(false), 3000);
+                  
+                    } catch (err: any) {
+                      console.error('Error joining table:', err);
+                      if (err.message.includes('The table is full')) {
+                        setError('This table is already full');
+                      } else if (err.message.includes('The table date has passed')) {
+                        setError('This table has already ended');
+                      } else {
+                        setError('Failed to join table');
+                      }
+                    } finally {
+                      setJoining(false);
+                    }
+                  }}
+                  disabled={!wallet.connected || joining}
+                >
+                  <span>{joining ? 'Joining...' : 'Reserve' }</span>
+                  <span className="bg-gray-800 px-3 py-1 rounded">{table.price.toLocaleString()} STT</span>
+                </button>
+              </div>
+            )}
 
-                  await program.methods
-                    .joinTable()
-                    .accounts({
-                      table: tablePubkey,
-                      participant: wallet.publicKey
-                    })
-                    .rpc();
+            <div className="bg-gray-50 p-6 rounded-lg">
+              <h2 className="text-lg font-semibold mb-6">About This Table</h2>
+              <p className="text-base text-gray-600">{table.description}</p>
+            </div>
+          </div>
+          )}
 
-                  // Refresh table data
-                  const updatedTable = await program.account.table.fetch(tablePubkey);
-                  setTable(prev => prev ? {
-                    ...prev,
-                    currentParticipants: updatedTable.participants.length
-                  } : null);
-                  setShowSuccess(true);
-                  setTimeout(() => setShowSuccess(false), 3000);
+          <div className="space-y-6">
+            <div className="bg-white p-6 border rounded-lg shadow-sm">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 text-base text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>
+                    {new Date(table.date * 1000).toLocaleDateString('en-US', {
+                      month: 'numeric',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </span>
+                </div>
 
-                } catch (err: any) {
-                  console.error('Error joining table:', err);
-                  if (err.message.includes('The table is full')) {
-                    setError('This table is already full');
-                  } else if (err.message.includes('The table date has passed')) {
-                    setError('This table has already ended');
-                  } else {
-                    setError('Failed to join table');
-                  }
-                } finally {
-                  setJoining(false);
-                }
-              }}
-              disabled={!wallet.connected || joining}
-            >
-              {joining ? 'Joining...' : 'Join Table'}
-            </button>
+                <div className="flex items-center gap-3 text-base text-gray-600">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>{table.location}</span>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-base text-gray-600">Seats Taken</span>
+                    <span className="text-base font-medium">{table.currentParticipants + 1}/{table.maxParticipants + 1}</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="text-sm text-gray-600 flex items-center gap-2">
+                      <span className="truncate">{table.organizer.slice(0, 4)}...{table.organizer.slice(-4)}</span>
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Host</span>
+                    </div>
+                    {table.participants.map((participant, index) => (
+                      <div key={index} className="text-sm text-gray-600 flex items-center gap-2">
+                        <span className="truncate">{participant.slice(0, 4)}...{participant.slice(-4)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

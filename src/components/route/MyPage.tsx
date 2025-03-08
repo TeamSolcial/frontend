@@ -119,7 +119,14 @@ export const MyPage: FC = () => {
                         <span className="text-sm text-gray-500">{table.account.currentSeats}/{table.account.maxSeats}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <span>{new Date(table.account.date).toLocaleString()}</span>
+                        <span>
+                          {new Date(table.account.date).toLocaleDateString('en-US', {
+                            month: 'numeric',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </span>
                         <span>·</span>
                         <span>{table.account.location}</span>
                       </div>

@@ -29,7 +29,7 @@ export const Discover: FC = () => {
               hour: '2-digit',
               minute: '2-digit'
             }),
-            location: `${table.account.city}, ${table.account.country}`,
+            location: table.account.location,
             category: table.account.category,
             description: table.account.description,
             price: table.account.price.toNumber(),
