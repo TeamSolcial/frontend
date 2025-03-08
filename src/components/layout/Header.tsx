@@ -17,7 +17,12 @@ export const Header = () => {
         />
       </div>
         <nav className="flex items-center gap-4">
-          <button className="text-gray-600 hover:text-gray-900 text-base sm:text-lg">Discover</button>
+          <button
+            onClick={() => navigate('/discover')}
+            className="text-gray-600 hover:text-gray-900 text-base sm:text-lg"
+          >
+            Discover
+          </button>
           {connected && (
             <button
               onClick={() => navigate('/my-page')}
