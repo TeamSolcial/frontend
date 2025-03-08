@@ -1,14 +1,20 @@
-{
+/**
+ * Program IDL in camelCase format in order to be used in JS/TS.
+ *
+ * Note that this is only a type helper and is not the actual IDL. The original
+ * IDL can be found at `target/idl/sola_table.json`.
+ */
+export type SolaTable = {
   "address": "GdFRCmL2NYrB42712pU45t8C9Uj1nKLYKzg8NjkrsPoK",
   "metadata": {
-    "name": "sola_table",
+    "name": "solaTable",
     "version": "0.1.0",
     "spec": "0.1.0",
     "description": "Created with Anchor"
   },
   "instructions": [
     {
-      "name": "create_meetup",
+      "name": "createMeetup",
       "discriminator": [
         68,
         21,
@@ -31,7 +37,7 @@
           "signer": true
         },
         {
-          "name": "system_program",
+          "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
       ],
@@ -45,7 +51,7 @@
           "type": "string"
         },
         {
-          "name": "max_participants",
+          "name": "maxParticipants",
           "type": "u8"
         },
         {
@@ -73,13 +79,13 @@
           "type": "string"
         },
         {
-          "name": "image_url",
+          "name": "imageUrl",
           "type": "string"
         }
       ]
     },
     {
-      "name": "join_meetup",
+      "name": "joinMeetup",
       "discriminator": [
         4,
         140,
@@ -105,7 +111,7 @@
   ],
   "accounts": [
     {
-      "name": "Meetup",
+      "name": "meetup",
       "discriminator": [
         201,
         72,
@@ -121,18 +127,18 @@
   "errors": [
     {
       "code": 6000,
-      "name": "MeetupFull",
+      "name": "meetupFull",
       "msg": "The meetup is full"
     },
     {
       "code": 6001,
-      "name": "MeetupExpired",
+      "name": "meetupExpired",
       "msg": "The meetup date has passed"
     }
   ],
   "types": [
     {
-      "name": "Meetup",
+      "name": "meetup",
       "type": {
         "kind": "struct",
         "fields": [
@@ -149,11 +155,11 @@
             "type": "string"
           },
           {
-            "name": "max_participants",
+            "name": "maxParticipants",
             "type": "u8"
           },
           {
-            "name": "current_participants",
+            "name": "currentParticipants",
             "type": "u8"
           },
           {
@@ -181,11 +187,11 @@
             "type": "string"
           },
           {
-            "name": "image_url",
+            "name": "imageUrl",
             "type": "string"
           }
         ]
       }
     }
   ]
-}
+};
