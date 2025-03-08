@@ -135,6 +135,7 @@ export const OpenTable: FC = () => {
               placeholder="Table Name"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              maxLength={50}
             />
           </div>
 
@@ -178,6 +179,7 @@ export const OpenTable: FC = () => {
               placeholder="Offline location or virtual link"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              maxLength={100}
             />
           </div>
 
@@ -196,6 +198,7 @@ export const OpenTable: FC = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               required
+              maxLength={200}
             />
           </div>
 
