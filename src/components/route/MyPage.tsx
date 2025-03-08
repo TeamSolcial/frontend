@@ -9,11 +9,24 @@ export const MyPage: FC = () => {
     return `${address.slice(0, 4)}...${address.slice(-4)}`;
   };
 
+  // Generate avatar URL using DiceBear API
+  const getAvatarUrl = (address: string) => {
+    return `https://api.dicebear.com/7.x/identicon/svg?seed=${address}`;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-8">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center mb-8">
-          <div className="w-20 h-20 bg-gray-200 rounded-full mr-4"></div>
+          {publicKey ? (
+            <img
+              src={getAvatarUrl(publicKey.toString())}
+              alt="Profile"
+              className="w-16 h-16 rounded-full mr-4 bg-gray-200 object-cover"
+            />
+          ) : (
+            <div className="w-16 h-16 bg-gray-200 rounded-full mr-4"></div>
+          )}
           <div>
             <h1 className="text-2xl font-bold">
               {publicKey ? formatAddress(publicKey.toString()) : 'Not Connected'}
