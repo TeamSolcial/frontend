@@ -1,33 +1,91 @@
-import { FC } from 'react';
-import { Table } from '../common/TableCard';
-// import { useParams } from 'react-router-dom';
+import { FC, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { getProgram } from '../../utils/anchor';
+import { PublicKey } from '@solana/web3.js';
+
+interface TableData {
+  title: string;
+  description: string;
+  maxParticipants: number;
+  currentParticipants: number;
+  location: string;
+  price: number;
+  date: number;
+  category: string;
+  imageUrl: string;
+}
 
 export const TableDetail: FC = () => {
-  // const { id } = useParams();
+  const { id } = useParams();
+  const { connection } = useConnection();
+  const wallet = useWallet();
+  const [table, setTable] = useState<TableData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock event data - In a real app, this would come from an API or state management
-  const table: Table = {
-    id: '1',
-    title: 'Friday Random Beer Talk',
-    capacity: '3/5',
-    date: '3/29 Sat 1:00 PM',
-    location: 'Teheran-ro-1gil, Seoul',
-    category: 'Food',
-    description: 'Join us for a casual beer talk session where we share stories and make new friends!',
-    price: 3,
+  useEffect(() => {
+    const fetchTableData = async () => {
+      if (!id) return;
+
+      try {
+        const program = getProgram(connection, wallet);
+        const meetupPubkey = new PublicKey(id);
+        const meetup = await program.account.meetup.fetch(meetupPubkey);
+
+        setTable({
+          title: meetup.title,
+          description: meetup.description,
+          maxParticipants: meetup.maxParticipants,
+          currentParticipants: meetup.currentParticipants,
+          location: `${meetup.city}, ${meetup.country}`,
+          price: meetup.price.toNumber(),
+          date: meetup.date.toNumber(),
+          category: meetup.category,
+          imageUrl: meetup.imageUrl
+        });
+      } catch (err) {
+        console.error('Error fetching table data:', err);
+        setError('Failed to load table data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTableData();
+  }, [id, connection, wallet]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-20 mb-16 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error || !table) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-20 mb-16">
+        <div className="text-center text-red-600">{error || 'Table not found'}</div>
+      </div>
+    );
   };
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-16">
       <div className="max-w-4xl mx-auto">
         <div className="aspect-video w-full bg-gray-100 rounded-lg mb-8 flex items-center justify-center">
-          <div className="w-24 h-24 border-4 border-gray-300 transform rotate-45"></div>
+          {table.imageUrl ? (
+            <img src={table.imageUrl} alt={table.title} className="w-full h-full object-cover rounded-lg" />
+          ) : (
+            <div className="w-24 h-24 border-4 border-gray-300 transform rotate-45"></div>
+          )}
         </div>
 
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">{table.title}</h1>
           <div className="flex items-center gap-4 text-gray-600 mb-6">
-            <span>{table.date}</span>
+            <span>{new Date(table.date).toLocaleString()}</span>
             <span>·</span>
             <span>{table.location}</span>
           </div>
@@ -36,7 +94,7 @@ export const TableDetail: FC = () => {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              {table.capacity}
+              {table.currentParticipants}/{table.maxParticipants}
             </span>
             <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">{table.category}</span>
           </div>

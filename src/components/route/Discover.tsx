@@ -7,18 +7,7 @@ export const Discover: FC = () => {
   const { connection } = useConnection();
   const wallet = useWallet();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [tables, setTables] = useState<Table[]>([
-    {
-      id: '1',
-      title: 'Friday Random Beer Talk',
-      capacity: '3/5',
-      date: '3/29 Sat 1:00 PM',
-      location: 'Seoul',
-      category: 'Food',
-      description: 'Join us for a casual beer talk session where we share stories and make new friends!',
-      price: 3,
-    }
-  ]);
+  const [tables, setTables] = useState<Table[]>([]);
 
   useEffect(() => {
     const fetchTables = async () => {
