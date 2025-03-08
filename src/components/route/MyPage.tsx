@@ -23,16 +23,16 @@ export const MyPage: FC = () => {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Upcoming Events</h2>
+          <h2 className="text-xl font-semibold mb-4">Upcoming Tables</h2>
           <div className="grid gap-4">
             <div className="text-center py-8 text-gray-500">
-              No upcoming events
+              No upcoming tables
             </div>
           </div>
         </div>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">Past Events</h2>
+          <h2 className="text-xl font-semibold mb-4">Past Tables</h2>
           <div className="grid gap-4">
             <div className="border rounded-lg p-4 hover:shadow-md transition-shadow opacity-60">
               <div className="flex items-center gap-4">

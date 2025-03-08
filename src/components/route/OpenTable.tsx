@@ -156,7 +156,7 @@ export const OpenTable: FC = () => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="Event Name"
+              placeholder="Table Name"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -192,7 +192,7 @@ export const OpenTable: FC = () => {
               name="location"
               value={formData.location}
               onChange={handleChange}
-              placeholder="Event Location"
+              placeholder="Table Location"
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -212,7 +212,7 @@ export const OpenTable: FC = () => {
           </div>
 
           <div className="space-y-4">
-            <h3 className="font-medium">Event Options</h3>
+            <h3 className="font-medium">Table Options</h3>
             <div className="space-y-2">
               <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
                 <span>Ticket Price</span>

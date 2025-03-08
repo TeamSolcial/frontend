@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { Event } from '../common/EventCard';
+import { Table } from '../common/TableCard';
 // import { useParams } from 'react-router-dom';
 
 export const TableDetail: FC = () => {
   // const { id } = useParams();
 
   // Mock event data - In a real app, this would come from an API or state management
-  const event: Event = {
+  const table: Table = {
     id: '1',
     title: 'Friday Random Beer Talk',
     capacity: '3/5',
@@ -25,23 +25,23 @@ export const TableDetail: FC = () => {
         </div>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">{event.title}</h1>
+          <h1 className="text-3xl font-bold mb-4">{table.title}</h1>
           <div className="flex items-center gap-4 text-gray-600 mb-6">
-            <span>{event.date}</span>
+            <span>{table.date}</span>
             <span>·</span>
-            <span>{event.location}</span>
+            <span>{table.location}</span>
           </div>
           <div className="flex items-center gap-3 mb-6">
-            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">{event.capacity}</span>
-            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">{event.category}</span>
+            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">{table.capacity}</span>
+            <span className="px-3 py-1 bg-gray-100 rounded-full text-sm">{table.category}</span>
           </div>
-          <p className="text-gray-600 whitespace-pre-wrap">{event.description}</p>
+          <p className="text-gray-600 whitespace-pre-wrap">{table.description}</p>
         </div>
 
         <div className="border-t pt-8">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-2xl font-bold">{event.price.toLocaleString()} STT</span>
+              <span className="text-2xl font-bold">{table.price.toLocaleString()} STT</span>
             </div>
             <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors">
               Join Table

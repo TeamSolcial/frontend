@@ -1,9 +1,9 @@
 import { FC, useState } from 'react';
-import { EventCard, Event } from '../common/EventCard';
+import { TableCard, Table } from '../common/TableCard';
 
 export const Discover: FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [events] = useState<Event[]>([
+  const [tables] = useState<Table[]>([
     {
       id: '1',
       title: 'Friday Random Beer Talk',
@@ -20,8 +20,8 @@ export const Discover: FC = () => {
     setSelectedCategory(category.toLowerCase());
   };
 
-  const filteredEvents = events.filter(event => 
-    selectedCategory === 'all' || event.category.toLowerCase() === selectedCategory
+  const filteredTables = tables.filter(table => 
+    selectedCategory === 'all' || table.category.toLowerCase() === selectedCategory
   );
 
   return (
@@ -33,7 +33,7 @@ export const Discover: FC = () => {
           <span className="text-sm bg-gray-100 px-2 py-1 rounded">Featured</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <EventCard event={events[0]} variant="featured" />
+          <TableCard table={tables[0]} variant="featured" />
         </div>
       </div>
 
@@ -72,8 +72,8 @@ export const Discover: FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Event cards */}
-        {filteredEvents.map((event) => (
-          <EventCard key={event.id} event={event} />
+        {filteredTables.map((table) => (
+          <TableCard key={table.id} table={table} />
         ))}
       </div>
     </div>

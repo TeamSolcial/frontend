@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export interface Event {
+export interface Table {
   id: string;
   title: string;
   capacity: string;
@@ -12,19 +12,19 @@ export interface Event {
   price: number;
 }
 
-interface EventCardProps {
-  event: Event;
+interface TableCardProps {
+  table: Table;
   variant?: 'featured' | 'default';
 }
 
-export const EventCard: FC<EventCardProps> = ({ event, variant = 'default' }) => {
+export const TableCard: FC<TableCardProps> = ({ table: table, variant = 'default' }) => {
   const isFeatured = variant === 'featured';
   const navigate = useNavigate();
 
   return (
     <div 
       className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer" 
-      onClick={() => navigate(`/table/${event.id}`)}
+      onClick={() => navigate(`/table/${table.id}`)}
     >      <div className="relative">
         <div className={`${isFeatured ? 'aspect-video' : 'w-full h-48'} bg-gray-100 flex items-center justify-center`}>
           <div className="w-12 h-12 border-2 border-gray-300 transform rotate-45"></div>
@@ -39,19 +39,19 @@ export const EventCard: FC<EventCardProps> = ({ event, variant = 'default' }) =>
       </div>
       <div className={isFeatured ? 'p-6' : 'p-4'}>
         <div className="mb-3">
-          <h3 className="text-lg font-medium mb-1">{event.title}</h3>
-          <div className="text-sm text-gray-600">{event.date}</div>
+          <h3 className="text-lg font-medium mb-1">{table.title}</h3>
+          <div className="text-sm text-gray-600">{table.date}</div>
         </div>
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-sm bg-gray-100 px-2 py-1 rounded">{event.capacity}</span>
-          <span className="text-sm bg-gray-100 px-2 py-1 rounded">{event.category}</span>
-          <span className="text-sm bg-gray-100 px-2 py-1 rounded">{event.location}</span>
+          <span className="text-sm bg-gray-100 px-2 py-1 rounded">{table.capacity}</span>
+          <span className="text-sm bg-gray-100 px-2 py-1 rounded">{table.category}</span>
+          <span className="text-sm bg-gray-100 px-2 py-1 rounded">{table.location}</span>
         </div>
         {!isFeatured && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+          <p className="text-sm text-gray-600 mb-4 line-clamp-2">{table.description}</p>
         )}
         <div className="flex items-center justify-between">
-          <span className="font-medium">{event.price.toLocaleString()} STT</span>
+          <span className="font-medium">{table.price.toLocaleString()} STT</span>
           {!isFeatured && (
             <button className="text-gray-400 hover:text-gray-600">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
