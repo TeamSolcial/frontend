@@ -52,7 +52,7 @@ export const OpenTable: FC = () => {
           "Seoul", // city
           formData.location,
           new BN(Number(formData.price)),
-          new BN(new Date(formData.startDate).getTime()),
+          new BN(new Date(formData.startDate).getTime() / 1000),
           formData.category,
           formData.imageUrl
         )

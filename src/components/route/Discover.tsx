@@ -17,12 +17,12 @@ export const Discover: FC = () => {
         const now = Date.now();
         
         const formattedTables = allTables
-          .filter(table => table.account.date.toNumber() > now)
+          .filter(table => table.account.date.toNumber() * 1000 > now)
           .map(table => ({
             id: table.publicKey.toString(),
             title: table.account.title,
             capacity: `${table.account.participants.length}/${table.account.maxParticipants}`,
-            date: new Date(table.account.date.toNumber()).toLocaleDateString('en-US', {
+            date: new Date(table.account.date.toNumber() * 1000).toLocaleDateString('en-US', {
               month: 'numeric',
               day: 'numeric',
               hour: '2-digit',

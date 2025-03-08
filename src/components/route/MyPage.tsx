@@ -57,7 +57,7 @@ export const MyPage: FC = () => {
               city: table.account.city,
               location: table.account.location,
               price: table.account.price.toNumber(),
-              date: table.account.date.toNumber(),
+              date: table.account.date.toNumber() * 1000,
               category: table.account.category,
               imageUrl: table.account.imageUrl
             }
@@ -169,7 +169,7 @@ export const MyPage: FC = () => {
                         <span className="text-sm text-gray-500">{table.account.currentParticipants}/{table.account.maxParticipants}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <span>{new Date(table.account.date).toLocaleString()}</span>
+                        <span>{new Date(table.account.date * 1000).toLocaleString()}</span>
                         <span>·</span>
                         <span>{table.account.location}</span>
                       </div>

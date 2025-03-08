@@ -92,7 +92,7 @@ export const TableDetail: FC = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">{table.title}</h1>
           <div className="flex items-center gap-4 text-gray-600 mb-6">
-            <span>{new Date(table.date).toLocaleString()}</span>
+            <span>{new Date(table.date * 1000).toLocaleString()}</span>
             <span>·</span>
             <span>{table.location}</span>
           </div>
