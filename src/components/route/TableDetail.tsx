@@ -23,6 +23,8 @@ export const TableDetail: FC = () => {
   const [table, setTable] = useState<TableData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [joining, setJoining] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     const fetchTableData = async () => {
@@ -72,7 +74,12 @@ export const TableDetail: FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20 mb-16">
+    <div className="container mx-auto px-4 py-8 mt-20 mb-16 relative">
+      {showSuccess && (
+        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in-down">
+          Successfully joined the table!
+        </div>
+      )}
       <div className="max-w-4xl mx-auto">
         <div className="aspect-video w-full bg-gray-100 rounded-lg mb-8 flex items-center justify-center">
           {table.imageUrl ? (
@@ -106,8 +113,49 @@ export const TableDetail: FC = () => {
             <div>
               <span className="text-2xl font-bold">{table.price.toLocaleString()} STT</span>
             </div>
-            <button className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors">
-              Join Table
+            <button 
+              className={`px-6 py-3 rounded-lg transition-colors ${wallet.connected ? 'bg-black hover:bg-gray-800 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed'}`}
+              onClick={async () => {
+                if (!wallet.connected || !id || !table || joining || !wallet.publicKey) return;
+                
+                try {
+                  setJoining(true);
+                  const program = getProgram(connection, wallet);
+                  const meetupPubkey = new PublicKey(id);
+
+                  await program.methods
+                    .joinMeetup()
+                    .accounts({
+                      meetup: meetupPubkey,
+                      participant: wallet.publicKey
+                    })
+                    .rpc();
+
+                  // Refresh table data
+                  const updatedMeetup = await program.account.meetup.fetch(meetupPubkey);
+                  setTable(prev => prev ? {
+                    ...prev,
+                    currentParticipants: updatedMeetup.currentParticipants
+                  } : null);
+                  setShowSuccess(true);
+                  setTimeout(() => setShowSuccess(false), 3000);
+
+                } catch (err: any) {
+                  console.error('Error joining table:', err);
+                  if (err.message.includes('The meetup is full')) {
+                    setError('This table is already full');
+                  } else if (err.message.includes('The meetup date has passed')) {
+                    setError('This table has already ended');
+                  } else {
+                    setError('Failed to join table');
+                  }
+                } finally {
+                  setJoining(false);
+                }
+              }}
+              disabled={!wallet.connected || joining}
+            >
+              {joining ? 'Joining...' : 'Join Table'}
             </button>
           </div>
         </div>
