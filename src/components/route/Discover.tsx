@@ -1,9 +1,13 @@
-import { FC, useState } from 'react';
+import { FC, useState, useEffect } from 'react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { TableCard, Table } from '../common/TableCard';
+import { getProgram } from '../../utils/anchor';
 
 export const Discover: FC = () => {
+  const { connection } = useConnection();
+  const wallet = useWallet();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [tables] = useState<Table[]>([
+  const [tables, setTables] = useState<Table[]>([
     {
       id: '1',
       title: 'Friday Random Beer Talk',
@@ -16,6 +20,41 @@ export const Discover: FC = () => {
     }
   ]);
 
+  useEffect(() => {
+    const fetchTables = async () => {
+      try {
+        const program = getProgram(connection, wallet);
+        const allMeetups = await program.account.meetup.all();
+        const now = Date.now();
+        
+        const formattedTables = allMeetups
+          .filter(meetup => meetup.account.date.toNumber() > now)
+          .map(meetup => ({
+            id: meetup.publicKey.toString(),
+            title: meetup.account.title,
+            capacity: `${meetup.account.currentParticipants}/${meetup.account.maxParticipants}`,
+            date: new Date(meetup.account.date.toNumber()).toLocaleDateString('en-US', {
+              month: 'numeric',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            }),
+            location: `${meetup.account.city}, ${meetup.account.country}`,
+            category: meetup.account.category,
+            description: meetup.account.description,
+            price: meetup.account.price.toNumber(),
+            imageUrl: meetup.account.imageUrl
+          }));
+  
+        setTables(formattedTables);
+      } catch (error) {
+        console.error('Error fetching tables:', error);
+      }
+    };
+  
+    fetchTables();
+  }, [connection, wallet]);
+
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category.toLowerCase());
   };
@@ -23,6 +62,10 @@ export const Discover: FC = () => {
   const filteredTables = tables.filter(table => 
     selectedCategory === 'all' || table.category.toLowerCase() === selectedCategory
   );
+
+  const hotTables = tables
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 3);
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-16">
@@ -33,7 +76,9 @@ export const Discover: FC = () => {
           <span className="text-sm bg-gray-100 px-2 py-1 rounded">Featured</span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <TableCard table={tables[0]} variant="featured" />
+          {hotTables.map((table) => (
+            <TableCard key={table.id} table={table} variant="featured" />
+          ))}
         </div>
       </div>
 

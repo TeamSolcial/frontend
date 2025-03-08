@@ -10,6 +10,7 @@ export interface Table {
   category: string;
   description: string;
   price: number;
+  imageUrl?: string;
 }
 
 interface TableCardProps {
@@ -26,8 +27,12 @@ export const TableCard: FC<TableCardProps> = ({ table: table, variant = 'default
       className="border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer" 
       onClick={() => navigate(`/table/${table.id}`)}
     >      <div className="relative">
-        <div className={`${isFeatured ? 'aspect-video' : 'w-full h-48'} bg-gray-100 flex items-center justify-center`}>
-          <div className="w-12 h-12 border-2 border-gray-300 transform rotate-45"></div>
+        <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+          {table.imageUrl ? (
+            <img src={table.imageUrl} alt={table.title} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-12 h-12 border-2 border-gray-300 transform rotate-45"></div>
+          )}
         </div>
         <div className="absolute top-4 right-4 flex gap-2">
           <button className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50">
@@ -37,7 +42,7 @@ export const TableCard: FC<TableCardProps> = ({ table: table, variant = 'default
           </button>
         </div>
       </div>
-      <div className={isFeatured ? 'p-6' : 'p-4'}>
+      <div className="p-4">
         <div className="mb-3">
           <h3 className="text-lg font-medium mb-1">{table.title}</h3>
           <div className="text-sm text-gray-600">{table.date}</div>
