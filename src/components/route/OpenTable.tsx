@@ -40,11 +40,11 @@ export const OpenTable: FC = () => {
     try {
       const program = getProgram(connection, wallet);
       
-      // Generate a new account for the meetup
-      const meetupKeypair = web3.Keypair.generate();
+      // Generate a new account for the table
+      const tableKeypair = web3.Keypair.generate();
       
       const tx = await program.methods
-        .createMeetup(
+        .createTable(
           formData.title,
           formData.description,
           Number(formData.seats),
@@ -57,16 +57,16 @@ export const OpenTable: FC = () => {
           formData.imageUrl
         )
         .accounts({
-          meetup: meetupKeypair.publicKey,
+          table: tableKeypair.publicKey,
           organizer: wallet.publicKey
         })
-        .signers([meetupKeypair])
+        .signers([tableKeypair])
         .rpc();
 
       console.log("Transaction signature", tx);
       navigate('/open-table/success');
     } catch (error) {
-      console.error("Error creating meetup:", error);
+      console.error("Error creating table:", error);
       navigate('/open-table/failure');
     }
   };

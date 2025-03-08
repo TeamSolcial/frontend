@@ -1,5 +1,5 @@
 {
-  "address": "GdFRCmL2NYrB42712pU45t8C9Uj1nKLYKzg8NjkrsPoK",
+  "address": "8pWTbsckvHvvRN71PZ4rV2y3kexmdgRgoxgPbWYRVxsi",
   "metadata": {
     "name": "sola_table",
     "version": "0.1.0",
@@ -8,20 +8,20 @@
   },
   "instructions": [
     {
-      "name": "create_meetup",
+      "name": "create_table",
       "discriminator": [
-        68,
-        21,
-        121,
-        155,
-        244,
-        190,
-        141,
-        132
+        214,
+        142,
+        131,
+        250,
+        242,
+        83,
+        135,
+        185
       ],
       "accounts": [
         {
-          "name": "meetup",
+          "name": "table",
           "writable": true,
           "signer": true
         },
@@ -79,20 +79,20 @@
       ]
     },
     {
-      "name": "join_meetup",
+      "name": "join_table",
       "discriminator": [
-        4,
-        140,
-        16,
-        124,
-        173,
-        243,
-        255,
-        206
+        14,
+        117,
+        84,
+        51,
+        95,
+        146,
+        171,
+        70
       ],
       "accounts": [
         {
-          "name": "meetup",
+          "name": "table",
           "writable": true
         },
         {
@@ -105,34 +105,44 @@
   ],
   "accounts": [
     {
-      "name": "Meetup",
+      "name": "Table",
       "discriminator": [
-        201,
-        72,
-        148,
-        178,
-        188,
-        166,
-        181,
-        174
+        34,
+        100,
+        138,
+        97,
+        236,
+        129,
+        230,
+        112
       ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "MeetupFull",
-      "msg": "The meetup is full"
+      "name": "TableFull",
+      "msg": "The table is full"
     },
     {
       "code": 6001,
-      "name": "MeetupExpired",
-      "msg": "The meetup date has passed"
+      "name": "TableExpired",
+      "msg": "The table date has passed"
+    },
+    {
+      "code": 6002,
+      "name": "AlreadyJoined",
+      "msg": "Already joined this table"
+    },
+    {
+      "code": 6003,
+      "name": "OrganizerCannotJoin",
+      "msg": "Organizer cannot join their own table"
     }
   ],
   "types": [
     {
-      "name": "Meetup",
+      "name": "Table",
       "type": {
         "kind": "struct",
         "fields": [
@@ -153,8 +163,10 @@
             "type": "u8"
           },
           {
-            "name": "current_participants",
-            "type": "u8"
+            "name": "participants",
+            "type": {
+              "vec": "pubkey"
+            }
           },
           {
             "name": "country",

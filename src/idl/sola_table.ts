@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/sola_table.json`.
  */
 export type SolaTable = {
-  "address": "GdFRCmL2NYrB42712pU45t8C9Uj1nKLYKzg8NjkrsPoK",
+  "address": "8pWTbsckvHvvRN71PZ4rV2y3kexmdgRgoxgPbWYRVxsi",
   "metadata": {
     "name": "solaTable",
     "version": "0.1.0",
@@ -14,20 +14,20 @@ export type SolaTable = {
   },
   "instructions": [
     {
-      "name": "createMeetup",
+      "name": "createTable",
       "discriminator": [
-        68,
-        21,
-        121,
-        155,
-        244,
-        190,
-        141,
-        132
+        214,
+        142,
+        131,
+        250,
+        242,
+        83,
+        135,
+        185
       ],
       "accounts": [
         {
-          "name": "meetup",
+          "name": "table",
           "writable": true,
           "signer": true
         },
@@ -85,20 +85,20 @@ export type SolaTable = {
       ]
     },
     {
-      "name": "joinMeetup",
+      "name": "joinTable",
       "discriminator": [
-        4,
-        140,
-        16,
-        124,
-        173,
-        243,
-        255,
-        206
+        14,
+        117,
+        84,
+        51,
+        95,
+        146,
+        171,
+        70
       ],
       "accounts": [
         {
-          "name": "meetup",
+          "name": "table",
           "writable": true
         },
         {
@@ -111,34 +111,44 @@ export type SolaTable = {
   ],
   "accounts": [
     {
-      "name": "meetup",
+      "name": "table",
       "discriminator": [
-        201,
-        72,
-        148,
-        178,
-        188,
-        166,
-        181,
-        174
+        34,
+        100,
+        138,
+        97,
+        236,
+        129,
+        230,
+        112
       ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "meetupFull",
-      "msg": "The meetup is full"
+      "name": "tableFull",
+      "msg": "The table is full"
     },
     {
       "code": 6001,
-      "name": "meetupExpired",
-      "msg": "The meetup date has passed"
+      "name": "tableExpired",
+      "msg": "The table date has passed"
+    },
+    {
+      "code": 6002,
+      "name": "alreadyJoined",
+      "msg": "Already joined this table"
+    },
+    {
+      "code": 6003,
+      "name": "organizerCannotJoin",
+      "msg": "Organizer cannot join their own table"
     }
   ],
   "types": [
     {
-      "name": "meetup",
+      "name": "table",
       "type": {
         "kind": "struct",
         "fields": [
@@ -159,8 +169,10 @@ export type SolaTable = {
             "type": "u8"
           },
           {
-            "name": "currentParticipants",
-            "type": "u8"
+            "name": "participants",
+            "type": {
+              "vec": "pubkey"
+            }
           },
           {
             "name": "country",

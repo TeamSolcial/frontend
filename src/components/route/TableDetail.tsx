@@ -32,19 +32,19 @@ export const TableDetail: FC = () => {
 
       try {
         const program = getProgram(connection, wallet);
-        const meetupPubkey = new PublicKey(id);
-        const meetup = await program.account.meetup.fetch(meetupPubkey);
+        const tablePubkey = new PublicKey(id);
+        const table = await program.account.table.fetch(tablePubkey);
 
         setTable({
-          title: meetup.title,
-          description: meetup.description,
-          maxParticipants: meetup.maxParticipants,
-          currentParticipants: meetup.currentParticipants,
-          location: `${meetup.city}, ${meetup.country}`,
-          price: meetup.price.toNumber(),
-          date: meetup.date.toNumber(),
-          category: meetup.category,
-          imageUrl: meetup.imageUrl
+          title: table.title,
+          description: table.description,
+          maxParticipants: table.maxParticipants,
+          currentParticipants: table.participants.length,
+          location: `${table.city}, ${table.country}`,
+          price: table.price.toNumber(),
+          date: table.date.toNumber(),
+          category: table.category,
+          imageUrl: table.imageUrl
         });
       } catch (err) {
         console.error('Error fetching table data:', err);
@@ -121,30 +121,30 @@ export const TableDetail: FC = () => {
                 try {
                   setJoining(true);
                   const program = getProgram(connection, wallet);
-                  const meetupPubkey = new PublicKey(id);
+                  const tablePubkey = new PublicKey(id);
 
                   await program.methods
-                    .joinMeetup()
+                    .joinTable()
                     .accounts({
-                      meetup: meetupPubkey,
+                      table: tablePubkey,
                       participant: wallet.publicKey
                     })
                     .rpc();
 
                   // Refresh table data
-                  const updatedMeetup = await program.account.meetup.fetch(meetupPubkey);
+                  const updatedTable = await program.account.table.fetch(tablePubkey);
                   setTable(prev => prev ? {
                     ...prev,
-                    currentParticipants: updatedMeetup.currentParticipants
+                    currentParticipants: updatedTable.participants.length
                   } : null);
                   setShowSuccess(true);
                   setTimeout(() => setShowSuccess(false), 3000);
 
                 } catch (err: any) {
                   console.error('Error joining table:', err);
-                  if (err.message.includes('The meetup is full')) {
+                  if (err.message.includes('The table is full')) {
                     setError('This table is already full');
-                  } else if (err.message.includes('The meetup date has passed')) {
+                  } else if (err.message.includes('The table date has passed')) {
                     setError('This table has already ended');
                   } else {
                     setError('Failed to join table');

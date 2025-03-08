@@ -13,26 +13,26 @@ export const Discover: FC = () => {
     const fetchTables = async () => {
       try {
         const program = getProgram(connection, wallet);
-        const allMeetups = await program.account.meetup.all();
+        const allTables = await program.account.table.all();
         const now = Date.now();
         
-        const formattedTables = allMeetups
-          .filter(meetup => meetup.account.date.toNumber() > now)
-          .map(meetup => ({
-            id: meetup.publicKey.toString(),
-            title: meetup.account.title,
-            capacity: `${meetup.account.currentParticipants}/${meetup.account.maxParticipants}`,
-            date: new Date(meetup.account.date.toNumber()).toLocaleDateString('en-US', {
+        const formattedTables = allTables
+          .filter(table => table.account.date.toNumber() > now)
+          .map(table => ({
+            id: table.publicKey.toString(),
+            title: table.account.title,
+            capacity: `${table.account.participants.length}/${table.account.maxParticipants}`,
+            date: new Date(table.account.date.toNumber()).toLocaleDateString('en-US', {
               month: 'numeric',
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit'
             }),
-            location: `${meetup.account.city}, ${meetup.account.country}`,
-            category: meetup.account.category,
-            description: meetup.account.description,
-            price: meetup.account.price.toNumber(),
-            imageUrl: meetup.account.imageUrl
+            location: `${table.account.city}, ${table.account.country}`,
+            category: table.account.category,
+            description: table.account.description,
+            price: table.account.price.toNumber(),
+            imageUrl: table.account.imageUrl
           }));
   
         setTables(formattedTables);

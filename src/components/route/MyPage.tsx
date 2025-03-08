@@ -3,7 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { getAvatarUrl, formatAddress } from '../../utils/profile';
 import { getProgram } from '../../utils/anchor';
 
-interface Meetup {
+interface Table {
   publicKey: string;
   account: {
     organizer: string;
@@ -25,55 +25,55 @@ export const MyPage: FC = () => {
   const { publicKey } = useWallet();
   const { connection } = useConnection();
   const wallet = useWallet();
-  const [upcomingTables, setUpcomingTables] = useState<Meetup[]>([]);
-  const [pastTables, setPastTables] = useState<Meetup[]>([]);
+  const [upcomingTables, setUpcomingTables] = useState<Table[]>([]);
+  const [pastTables, setPastTables] = useState<Table[]>([]);
   const [hostedCount, setHostedCount] = useState(0);
   const [participatedCount, setParticipatedCount] = useState(0);
 
   useEffect(() => {
-    const fetchMeetups = async () => {
+    const fetchTables = async () => {
       if (!publicKey) return;
 
       try {
         const program = getProgram(connection, wallet);
-        const meetups = await program.account.meetup.all();
+        const tables = await program.account.table.all();
         const now = Date.now();
 
-        const upcoming: Meetup[] = [];
-        const past: Meetup[] = [];
+        const upcoming: Table[] = [];
+        const past: Table[] = [];
         let hosted = 0;
         let participated = 0;
 
-        meetups.forEach((meetup: any) => {
-          const meetupData = {
-            publicKey: meetup.publicKey.toString(),
+        tables.forEach((table: any) => {
+          const tableData = {
+            publicKey: table.publicKey.toString(),
             account: {
-              organizer: meetup.account.organizer.toString(),
-              title: meetup.account.title,
-              description: meetup.account.description,
-              maxParticipants: meetup.account.maxParticipants,
-              currentParticipants: meetup.account.currentParticipants,
-              country: meetup.account.country,
-              city: meetup.account.city,
-              location: meetup.account.location,
-              price: meetup.account.price.toNumber(),
-              date: meetup.account.date.toNumber(),
-              category: meetup.account.category,
-              imageUrl: meetup.account.imageUrl
+              organizer: table.account.organizer.toString(),
+              title: table.account.title,
+              description: table.account.description,
+              maxParticipants: table.account.maxParticipants,
+              currentParticipants: table.account.currentParticipants,
+              country: table.account.country,
+              city: table.account.city,
+              location: table.account.location,
+              price: table.account.price.toNumber(),
+              date: table.account.date.toNumber(),
+              category: table.account.category,
+              imageUrl: table.account.imageUrl
             }
           };
 
           // Count hosted and participated tables
-          if (meetupData.account.organizer === publicKey.toString()) {
+          if (tableData.account.organizer === publicKey.toString()) {
             hosted++;
           } else {
             participated++;
           }
 
-          if (meetupData.account.date > now) {
-            upcoming.push(meetupData);
+          if (tableData.account.date > now) {
+            upcoming.push(tableData);
           } else {
-            past.push(meetupData);
+            past.push(tableData);
           }
         });
 
@@ -82,11 +82,11 @@ export const MyPage: FC = () => {
         setHostedCount(hosted);
         setParticipatedCount(participated);
       } catch (error) {
-        console.error('Error fetching meetups:', error);
+        console.error('Error fetching tables:', error);
       }
     };
 
-    fetchMeetups();
+    fetchTables();
   }, [publicKey, connection, wallet]);
 
   return (
