@@ -3,6 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useNavigate } from 'react-router-dom';
 import { BN, web3 } from '@project-serum/anchor';
 import { getProgram } from '../../utils/anchor';
+import { categories } from '../../Constants';
 
 export const OpenTable: FC = () => {
   const { connection } = useConnection();
@@ -119,13 +120,9 @@ export const OpenTable: FC = () => {
               required
             >
               <option value="">Category</option>
-              <option value="Food">Food</option>
-              <option value="Study">Study</option>
-              <option value="Arts">Arts</option>
-              <option value="Sports">Sports</option>
-              <option value="Games">Games</option>
-              <option value="Community">Community</option>
-              <option value="Other">Other</option>
+              {categories.map(category => (
+                <option value={category}>{category}</option>
+              ))}
             </select>
           </div>
 

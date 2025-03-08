@@ -2,6 +2,7 @@ import { FC, useState, useEffect } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { TableCard, Table } from '../common/TableCard';
 import { getProgram } from '../../utils/anchor';
+import { categories } from '../../Constants';
 
 export const Discover: FC = () => {
   const { connection } = useConnection();
@@ -101,7 +102,7 @@ export const Discover: FC = () => {
           >
             All
           </button>
-          {['Food', 'Study', 'Arts', 'Sports', 'Games', 'Community'].map(category => (
+          {categories.map(category => (
             <button
               key={category}
               className={`px-4 py-2 ${selectedCategory === category.toLowerCase() ? 'bg-gray-100' : 'hover:bg-gray-100'} rounded-full`}
