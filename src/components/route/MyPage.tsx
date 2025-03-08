@@ -1,18 +1,9 @@
 import { FC } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
+import { getAvatarUrl, formatAddress } from '../../utils/profile';
 
 export const MyPage: FC = () => {
   const { publicKey } = useWallet();
-  
-  // Utility function to format wallet address
-  const formatAddress = (address: string) => {
-    return `${address.slice(0, 4)}...${address.slice(-4)}`;
-  };
-
-  // Generate avatar URL using DiceBear API
-  const getAvatarUrl = (address: string) => {
-    return `https://api.dicebear.com/7.x/identicon/svg?seed=${address}`;
-  };
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-8">
