@@ -1,65 +1,12 @@
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { useParams } from 'react-router-dom';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { getProgram } from '../../utils/anchor';
-import { PublicKey } from '@solana/web3.js';
-
-interface TableData {
-  title: string;
-  description: string;
-  maxParticipants: number;
-  currentParticipants: number;
-  participants: string[];
-  organizer: string;
-  location: string;
-  price: number;
-  date: number;
-  category: string;
-  imageUrl: string;
-}
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useTable } from '../../hooks/useTable';
 
 export const TableDetail: FC = () => {
   const { id } = useParams();
-  const { connection } = useConnection();
   const wallet = useWallet();
-  const [table, setTable] = useState<TableData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [joining, setJoining] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    const fetchTableData = async () => {
-      if (!id) return;
-
-      try {
-        const program = getProgram(connection, wallet);
-        const tablePubkey = new PublicKey(id);
-        const table = await program.account.table.fetch(tablePubkey);
-
-        setTable({
-          title: table.title,
-          description: table.description,
-          maxParticipants: table.maxParticipants,
-          currentParticipants: table.participants.length,
-          participants: table.participants.map(p => p.toString()),
-          organizer: table.organizer.toString(),
-          location: `${table.location}`,
-          price: table.price.toNumber(),
-          date: table.date.toNumber(),
-          category: table.category,
-          imageUrl: table.imageUrl
-        });
-      } catch (err) {
-        console.error('Error fetching table data:', err);
-        setError('Failed to load table data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTableData();
-  }, [id, connection, wallet]);
+  const { table, loading, error, joining, showSuccess, joinTable } = useTable(id);
 
   if (loading) {
     return (
@@ -99,7 +46,7 @@ export const TableDetail: FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {table.organizer == wallet.publicKey?.toString()? (
+          {table.organizer === wallet.publicKey?.toString() ? (
             <div className="md:col-span-2 space-y-8">
               <div className="bg-gray-50 p-6 rounded-lg">
                 <h2 className="text-lg font-semibold mb-6">Host Information</h2>
@@ -112,68 +59,31 @@ export const TableDetail: FC = () => {
             </div>
           ) : (
             <div className="md:col-span-2 space-y-8">
-            {table.participants.includes(wallet.publicKey?.toString() || '') ? (
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h2 className="text-lg font-semibold mb-6">You're In</h2>
-                <p className="text-base text-gray-600 mb-6">No longer able to attend? Notify the host by cancelling your registration.</p>
-              </div>
-            ) : (
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h2 className="text-lg font-semibold mb-6">Registration</h2>
-                <p className="text-base text-gray-600 mb-6">Welcome! Sign up below to join this table.</p>
-                <button 
-                  className={`w-full flex items-center justify-between px-4 py-4 rounded-lg transition-colors text-lg ${wallet.connected ? 'bg-black hover:bg-gray-800 text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
-                  onClick={async () => {
-                    if (!wallet.connected || !id || !table || joining || !wallet.publicKey) return;
-                    
-                    try {
-                      setJoining(true);
-                      const program = getProgram(connection, wallet);
-                      const tablePubkey = new PublicKey(id);
-                  
-                      await program.methods
-                        .joinTable()
-                        .accounts({
-                          table: tablePubkey,
-                          participant: wallet.publicKey
-                        })
-                        .rpc();
-                  
-                      const updatedTable = await program.account.table.fetch(tablePubkey);
-                      setTable(prev => prev ? {
-                        ...prev,
-                        currentParticipants: updatedTable.participants.length,
-                        participants: updatedTable.participants.map(p => p.toString())
-                      } : null);
-                      setShowSuccess(true);
-                      setTimeout(() => setShowSuccess(false), 3000);
-                  
-                    } catch (err: any) {
-                      console.error('Error joining table:', err);
-                      if (err.message.includes('The table is full')) {
-                        setError('This table is already full');
-                      } else if (err.message.includes('The table date has passed')) {
-                        setError('This table has already ended');
-                      } else {
-                        setError('Failed to join table');
-                      }
-                    } finally {
-                      setJoining(false);
-                    }
-                  }}
-                  disabled={!wallet.connected || joining}
-                >
-                  <span>{joining ? 'Joining...' : 'Reserve' }</span>
-                  <span className="bg-gray-800 px-3 py-1 rounded">{table.price.toLocaleString()} STT</span>
-                </button>
-              </div>
-            )}
+              {table.participants.includes(wallet.publicKey?.toString() || '') ? (
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h2 className="text-lg font-semibold mb-6">You're In</h2>
+                  <p className="text-base text-gray-600 mb-6">No longer able to attend? Notify the host by cancelling your registration.</p>
+                </div>
+              ) : (
+                <div className="bg-gray-50 p-6 rounded-lg">
+                  <h2 className="text-lg font-semibold mb-6">Registration</h2>
+                  <p className="text-base text-gray-600 mb-6">Welcome! Sign up below to join this table.</p>
+                  <button 
+                    className={`w-full flex items-center justify-between px-4 py-4 rounded-lg transition-colors text-lg ${wallet.connected ? 'bg-black hover:bg-gray-800 text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                    onClick={joinTable}
+                    disabled={!wallet.connected || joining}
+                  >
+                    <span>{joining ? 'Joining...' : 'Reserve'}</span>
+                    <span className="bg-gray-800 px-3 py-1 rounded">{table.price.toLocaleString()} STT</span>
+                  </button>
+                </div>
+              )}
 
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <h2 className="text-lg font-semibold mb-6">About This Table</h2>
-              <p className="text-base text-gray-600">{table.description}</p>
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h2 className="text-lg font-semibold mb-6">About This Table</h2>
+                <p className="text-base text-gray-600">{table.description}</p>
+              </div>
             </div>
-          </div>
           )}
 
           <div className="space-y-6">

@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useState } from 'react';
+import { useWalletConnection } from '../../hooks/useWalletConnection';
 import { Alert } from '../common/Alert';
 
 export const Hero = () => {
   const navigate = useNavigate();
-  const { connected } = useWallet();
-  const [showAlert, setShowAlert] = useState(false);
+  const { showAlert, setShowAlert, handleWalletCheck } = useWalletConnection();
 
   return (
     <section className="flex flex-col justify-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20">
@@ -17,11 +15,9 @@ export const Hero = () => {
         </h1>
         <button 
           onClick={() => {
-            if (!connected) {
-              setShowAlert(true);
-              return;
+            if (handleWalletCheck()) {
+              navigate('/open-table');
             }
-            navigate('/open-table');
           }}
           className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors text-lg"
         >

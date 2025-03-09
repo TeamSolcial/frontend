@@ -1,80 +1,27 @@
-import { FC, useEffect, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { getAvatarUrl, formatAddress } from '../../utils/profile';
-import { getProgram } from '../../utils/anchor';
-import { Table } from '../common/Table';
+import { useMyTables } from '../../hooks/useMyTables';
 
 export const MyPage: FC = () => {
   const { publicKey } = useWallet();
-  const { connection } = useConnection();
-  const wallet = useWallet();
-  const [upcomingTables, setUpcomingTables] = useState<Table[]>([]);
-  const [pastTables, setPastTables] = useState<Table[]>([]);
-  const [hostedCount, setHostedCount] = useState(0);
-  const [participatedCount, setParticipatedCount] = useState(0);
+  const { upcomingTables, pastTables, hostedCount, participatedCount, loading, error } = useMyTables();
 
-  useEffect(() => {
-    const fetchTables = async () => {
-      if (!publicKey) return;
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-20 mb-8 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
 
-      try {
-        const program = getProgram(connection, wallet);
-        const tables = await program.account.table.all();
-        const now = Date.now();
-
-        const upcoming: Table[] = [];
-        const past: Table[] = [];
-        let hosted = 0;
-        let participated = 0;
-
-        tables
-        .filter((table: any) => table.account.organizer.toString() === publicKey.toString()
-          || table.account.participants.includes(publicKey.toString()))
-        .forEach((table: any) => {
-          const tableData = {
-            publicKey: table.publicKey.toString(),
-            account: {
-              organizer: table.account.organizer.toString(),
-              title: table.account.title,
-              description: table.account.description,
-              maxSeats: (table.account.maxParticipants ?? 0) + 1,
-              currentSeats: (table.account.participants.length ?? 0) + 1,
-              participants: table.account.participants,
-              country: table.account.country,
-              city: table.account.city,
-              location: table.account.location,
-              price: table.account.price.toNumber(),
-              date: table.account.date.toNumber() * 1000,
-              category: table.account.category,
-              imageUrl: table.account.imageUrl
-            }
-          };
-
-          // Count hosted and participated tables
-          if (tableData.account.organizer === publicKey.toString()) {
-            hosted++;
-          } else {
-            participated++;
-          }
-
-          if (tableData.account.date > now) {
-            upcoming.push(tableData);
-          } else {
-            past.push(tableData);
-          }
-        });
-
-        setUpcomingTables(upcoming);
-        setPastTables(past);
-        setHostedCount(hosted);
-        setParticipatedCount(participated);
-      } catch (error) {
-        console.error('Error fetching tables:', error);
-      }
-    };
-
-    fetchTables();
-  }, [publicKey, connection, wallet]);
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8 mt-20 mb-8">
+        <div className="text-center text-red-600">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 mb-8">
@@ -163,7 +110,7 @@ export const MyPage: FC = () => {
                         <span className="text-sm text-gray-500">{table.account.currentSeats}/{table.account.maxSeats}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <span>{new Date(table.account.date * 1000).toLocaleString()}</span>
+                        <span>{new Date(table.account.date).toLocaleString()}</span>
                         <span>·</span>
                         <span>{table.account.location}</span>
                       </div>
