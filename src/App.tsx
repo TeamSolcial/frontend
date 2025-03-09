@@ -12,16 +12,14 @@ import { TableDetail } from './components/route/TableDetail';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 
 const endpoint = clusterApiUrl('devnet');
-const wallets = [new PhantomWalletAdapter()];
 
 function App() {
   return (
     <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
+      <WalletProvider wallets={[]} autoConnect>
         <WalletModalProvider>
           <WalletContextProvider>
             <div className="flex flex-col min-h-screen bg-white">
