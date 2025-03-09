@@ -11,7 +11,10 @@ export const Hero = () => {
   return (
     <section className="flex flex-col justify-center min-h-screen px-4 sm:px-8 pt-16 sm:pt-20">
       <div className="w-full max-w-2xl">
-        <h1 className="text-4xl sm:text-5xl font-bold mb-6 sm:mb-8">Token connects people</h1>
+        <h1 className="text-4xl sm:text-5xl font-bold mb-6 sm:mb-8">
+          <div>Trade Time,</div>
+          <div>Connect at the Table</div>
+        </h1>
         <button 
           onClick={() => {
             if (!connected) {
